@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.security.auth.login.FailedLoginException;
+import javax.security.auth.login.LoginException;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -22,15 +25,13 @@ public class AppUserController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerNewUser(@RequestBody RegisterLoginUserDto newUser) {
-        if (!userService.checkIfUsernameExists(newUser.getUsername())) {
+    public ResponseEntity<?> registerNewUser(@RequestBody RegisterLoginUserDto newUser) throws LoginException {
             userService.registerNewUser(newUser);
             return ResponseEntity.ok(newUser);
-        } else return ResponseEntity.ok("This username already exists.");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody RegisterLoginUserDto userDto) {
+    public ResponseEntity<String> login(@RequestBody RegisterLoginUserDto userDto) throws FailedLoginException {
         if (!userService.login(userDto.getUsername(), userDto.getPassword())) {
             return new ResponseEntity<>("Username or password not found.", HttpStatus.NOT_FOUND);
         } else return new ResponseEntity<>("Logged in successfully.", HttpStatus.ACCEPTED);
