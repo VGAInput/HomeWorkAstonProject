@@ -20,9 +20,22 @@ public class AppUserServiceImpl implements AppUsersService {
 
 
     @PostConstruct
-    public void createAdmin() {
+    public void init() {
         AppUser admin = new AppUser(1, "admin", "admin");
         appUserRepository.save(admin);
+    }
+
+    @Override
+    public void deleteUser(int id) {
+        appUserRepository.findById(id).ifPresent(appUserRepository::delete);
+    }
+
+    public AppUser updateUser(AppUser user) throws Exception {
+        if (appUserRepository.existsById(user.getId())) {
+            return appUserRepository.save(user);
+        } else {
+            throw new Exception("Can't update - user not found.");
+        }
     }
 
     @Override
@@ -33,11 +46,12 @@ public class AppUserServiceImpl implements AppUsersService {
             appUserRepository.save(newAppUser);
         }
     }
+
     @Override
     public boolean changePassword(NewUserPasswordDto newUserPasswordDto) throws IllegalStateException {
         if (checkIfUsernameExists(newUserPasswordDto.getUsername())) {
             AppUser user = appUserRepository.findByUsername(newUserPasswordDto.getUsername());
-            if (!user.getPassword().equals(newUserPasswordDto.getOldPassword())){
+            if (!user.getPassword().equals(newUserPasswordDto.getOldPassword())) {
                 throw new IllegalStateException();
             }
             user.setPassword(newUserPasswordDto.getNewPassword());

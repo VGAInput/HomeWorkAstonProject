@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -26,8 +25,8 @@ public class AppUserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerNewUser(@RequestBody RegisterLoginUserDto newUser) throws LoginException {
-            userService.registerNewUser(newUser);
-            return ResponseEntity.ok(newUser);
+        userService.registerNewUser(newUser);
+        return ResponseEntity.ok(newUser);
     }
 
     @PostMapping("/login")
@@ -37,6 +36,19 @@ public class AppUserController {
         } else return new ResponseEntity<>("Logged in successfully.", HttpStatus.ACCEPTED);
 
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteUser(@RequestBody int id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok("User with id " + id + " has been deleted");
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<AppUser> updateUser(@RequestBody AppUser user) throws Exception {
+        userService.updateUser(user);
+        return ResponseEntity.ok(user);
+    }
+
 
     @GetMapping("/all")
     public ResponseEntity<List<AppUser>> getAllUsers() {

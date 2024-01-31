@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface AppUsersService {
 
+    void deleteUser(int id);
+
     void registerNewUser(RegisterLoginUserDto newUser) throws LoginException;
 
     boolean changePassword(NewUserPasswordDto newUserPasswordDto) throws IllegalStateException;
